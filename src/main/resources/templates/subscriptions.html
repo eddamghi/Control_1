@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="template.html"
+>
+<head>
+    <meta charset="UTF-8">
+    <title>Subscriptions</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="p-3">
+        <div class="card">
+            <div class="card-header">List of Clients</div>
+            <div class="card-body">
+                <form method="get" th:href="@{/admin/clients/{clientId}/subscriptions}">
+                </form>
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>ID</th><th>Subscription Date</th><th>Subscription Type</th><th>Balance</th><th>Monthly Amount</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="subscription:${listSubscriptions}">
+                        <td th:text="${subscription.id}"></td>
+                        <td th:text="${subscription.subscriptionDate}"></td>
+                        <td th:text="${subscription.subscriptionType}"></td>
+                        <td th:text="${subscription.balance}"></td>
+                        <td th:text="${subscription.monthlyAmount}"></td>
+                        <td th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
+                            <a onclick="return confirm('Are you sure you want to remove this subscription')" class="btn btn-danger"
+                               th:href="@{/admin/clients/{clientId}/subscriptions/deleteSubscription(id=${subscription.id}, page=${currentPage})}">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                        </td>
+
+                        <td th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
+                            <a  class="btn btn-danger"
+                                th:href="@{/admin/clients/{clientId}/subscriptions/editSuscription(id=${subscription.id})}">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                        </td>
+
+                    </tr>
+                    </tbody>
+                </table>
+                <ul class="nav nav-pills">
+                    <li th:each="page,status:${pages}">
+                        <a
+                                th:class="${status.index==currentPage?'btn btn-info ms-1':'btn btn-outline-info ms-1'}"
+                                th:href="@{/user/index(page=${status.index}, keyword=${keyword})}"
+                                th:text="${status.index+1}">
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
